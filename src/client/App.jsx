@@ -1,5 +1,12 @@
 import React from 'react';
-import { hot } from 'react-hot-loader';
+import {hot} from 'react-hot-loader';
+import Moment from 'react-moment';
+import 'moment-timezone';
+import moment from "moment";
+
+
+import Form from './form';
+import Cards from './cards';
 
 class App extends React.Component {
 
@@ -8,63 +15,51 @@ constructor(){
   console.log("constructing");
 
   this.state = {
-    thingsTodo : "",
-    ToDoList : []
+    ToDoList : [],
+    doneList : []
   }
 }
-
-clickTodoHandler() {
-
-    let currentword = this.state.thingsTodo
-    let array = this.state.ToDoList
-if (currentword){
-    array.push(currentword)
-
-    this.setState(array)
-
-    this.refs.input.value = "";
-    this.state.thingsTodo = "";
-    }
-}
-
-todoHandler(event){
-this.state.thingsTodo = event.target.value
-}
-
-
-deleteItem(key){
-    const filteredItems = this.state.ToDoList.filter((item) => {
-      return this.state.ToDoList[key] !== item
-    })
-    this.setState({
-      ToDoList: filteredItems,
-    })
-  }
 
   render() {
 
-    let showList = this.state.ToDoList.map((stuff, index)=>{
-        return(
-            <div>
-            <li key={index}>{stuff}
-            <button key={index} onClick={() => this.deleteItem(index)}>Delete</button>
-            </li>
-            </div>
-            )
-    })
+    const myCallback = (list)=>{
+        let array = this.state.ToDoList
+        console.log("Add sTuff in list");
+        array.push(list)
+        this.setState({ToDoList: array})
+        console.log(this.state.ToDoList);
+    }
+
+    const updateToDo = (list) =>{
+        let array = list
+        console.log
+        this.setState({ToDoList:array})
+    }
+
+    const doneCallback = (list) => {
+        let array = this.state.doneList
+        console.log("Add sTuff in list");
+        array.push(list)
+        this.setState({doneList: array})
+        console.log(this.state.doneList)
+    }
 
     return (
-      <div >
+      <div>
         Welcome.
         <div>
-        <input ref= "input" onChange={(event)=>{this.todoHandler(event);}}/>
-        <button onClick={()=>{this.clickTodoHandler()}}>Add a "To Do"</button>
+        <Form toDoUpdate = {myCallback}/>
         </div>
-        <div >
-            <ul>
-            {showList}
-            </ul>
+        <div>
+            <h2> TO DO LIST , SO YOU BETTER DO </h2>
+            <Cards list = {this.state.ToDoList} doneToDo = {doneCallback} todoNew = {updateToDo}/>
         </div>
+
+        <div>
+            <h2> FINISH LIAO </h2>
+            <Cards list = {this.state.doneList} delete = "false"/>
+        </div>
+
       </div>
     );
   }
